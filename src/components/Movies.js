@@ -5,6 +5,7 @@ import { selectMovies } from "../features/movie/movieSliec";
 
 const Movies = (props) => {
   const movies = useSelector(selectMovies);
+  console.log(movies)
   return (
     <Container>
       <h4>New to Disney+</h4>

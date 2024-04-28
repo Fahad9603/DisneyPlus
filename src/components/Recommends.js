@@ -5,7 +5,7 @@ import { selectRecommend } from "../features/movie/movieSliec";
 
 const Recommends = (props) => {
   const movies = useSelector(selectRecommend);
- 
+
 
   return (
     <Container>

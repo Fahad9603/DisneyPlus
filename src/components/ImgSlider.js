@@ -1,6 +1,10 @@
+import React,{useEffect} from 'react'
+import db from '../firebase.js';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import styled from "styled-components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useState } from 'react';
 import Slider from "react-slick";
 
 const ImgSlider = (props) => {
@@ -12,31 +16,35 @@ const ImgSlider = (props) => {
     slidesToScroll: 1,
     autoplay: true,
   };
+  
+const [images, setImages] = useState([]);
+  useEffect(() => {
+  
+    const fetchSlider = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'Slider_Image'));
+        const fetchedImages = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setImages(fetchedImages);
+        console.log(setImages,fetchedImages)
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+      };
+fetchSlider(); 
+}, [])
+
   return (
     <Carousel {...settings}>
-      <Wrap>
-        <a>
-          <img src="/images/slider-badging.jpg" alt="" />
-        </a>
-      </Wrap>
-
-      <Wrap>
-        <a>
-          <img src="/images/slider-scale.jpg" alt="" />
-        </a>
-      </Wrap>
-
-      <Wrap>
-        <a>
-          <img src="/images/slider-badag.jpg" alt="" />
-        </a>
-      </Wrap>
-
-      <Wrap>
-        <a>
-          <img src="/images/slider-scales.jpg" alt="" />
-        </a>
-      </Wrap>
+    
+       {images.map(image => (
+        <Wrap key={image.id}>
+          <a>
+            <img src={image.img} alt="" />
+          </a>
+          
+        </Wrap>
+        
+      ))}  
     </Carousel>
   );
 };

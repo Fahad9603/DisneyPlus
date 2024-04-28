@@ -32,6 +32,7 @@ const Header = (props) => {
         signInWithPopup(auth, provider)
                 .then((result) => {
                     let user = result.user;
+                    console.log(user)
                     dispatch(setUserLogin({
                         name: user.displayName,
                         email: user.email,
@@ -40,13 +41,9 @@ const Header = (props) => {
                 })
                 .catch((error) => {
                     if (error.code === 'auth/popup-closed-by-user') {
-                        // Handle the case where the user closes the popup
                         console.log('Popup closed by user');
-                        // You may provide a message or take appropriate action
                     } else {
-                        // Handle other errors
                         console.error('Error occurred during authentication:', error);
-                        // You may provide a message or take appropriate action
                     }
                 });
             } else if (userName) {
@@ -108,6 +105,7 @@ const Header = (props) => {
           </NavMenu>
           <SignOut>
             <UserImg src={userPhoto} alt={userName} />
+            
             <DropDown>
               <span onClick={handleAuth}>Sign out</span>
             </DropDown>
@@ -229,7 +227,9 @@ const Login = styled.a`
 `;
 
 const UserImg = styled.img`
-  height: 100%;
+height: 100%; 
+width: 100%; 
+border-radius: 50%;
 `;
 
 const DropDown = styled.div`

@@ -16,8 +16,9 @@ useEffect(() => {
     const fetchMovie = async () => {
         try {
           const docRef = doc(db, "Movies", id);
-          const docSnap = await getDoc(docRef);
           
+          const docSnap = await getDoc(docRef);
+         
           if (docSnap && docSnap.exists()) { 
           
             setDetailData(docSnap.data());
@@ -37,9 +38,11 @@ return (
   {showTrailer && 
       <TrailerPopup 
           url={detailData.trailer}
+  
           setShowTrailer={setShowTrailer}
       />
   }
+
   <StyledContainer>
       <StyledBackground
           style={{backgroundImage: `url(${detailData.backgroundImg})`}}
@@ -82,6 +85,8 @@ return (
   </StyledContainer>
   </>
 )
+
+
 }
 
 const StyledContainer = styled.div`

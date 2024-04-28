@@ -2,24 +2,27 @@ import React from 'react'
 import styled from 'styled-components'
 
 const TrailerPopup = ({ url, setShowTrailer }) => {
-    
+    console.log(url)
     return (
         <StyledContainer>
             <StyleBackground onClick={() => setShowTrailer(false)}>
                 <StyledTrailer>
                     <iframe 
-                        src={`https://www.youtube.com/embed/${url}`}
-                
+                        src={`https://www.youtube.com/embed/'${url}`}
+                        
                         title="YouTube video player" 
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowFullScreen
                     >
+        
                     </iframe>
                     
                 </StyledTrailer>
             </StyleBackground>
         </StyledContainer>
+
+        
         
     )
 
