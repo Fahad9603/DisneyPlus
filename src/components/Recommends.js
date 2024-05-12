@@ -1,3 +1,4 @@
+import React, { useRef, useEffect } from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -5,12 +6,27 @@ import { selectRecommend } from "../features/movie/movieSliec";
 
 const Recommends = (props) => {
   const movies = useSelector(selectRecommend);
+  const containerRef = useRef(null);
 
+  useEffect(() => {
+    const container = containerRef.current;
 
+    const handleWheel = (event) => {
+      event.preventDefault();
+      container.scrollLeft += event.deltaY;
+    };
+
+    container.addEventListener('wheel', handleWheel);
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
   return (
-    <Container>
+    
+    <Container >
       <h4>Recommended for You</h4>
-      <Content>
+      <Content ref={containerRef}>
         {movies &&
           movies.map((movie, key) => (
             <Wrap key={key}>
@@ -27,16 +43,23 @@ const Recommends = (props) => {
 
 const Container = styled.div`
   padding: 0 0 26px;
+
 `;
 
 const Content = styled.div`
-  display: grid;
+ display: grid;
   grid-gap: 25px;
   gap: 25px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(25%, 1fr); 
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-columns: minmax(50%, 1fr); 
+  }
+  overflow-x: auto; /* Horizontal scroll */
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  &::-webkit-scrollbar {
+    display: none; /* Hide scrollbar */
   }
 `;
 
@@ -46,7 +69,7 @@ const Wrap = styled.div`
   box-shadow: rgb(0 0 0 / 69%) 0px 26px 30px -10px,
     rgb(0 0 0 / 73%) 0px 16px 10px -10px;
   cursor: pointer;
-  overflow: hidden;
+  overflow-x: hidden;
   position: relative;
   transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
   border: 3px solid rgba(249, 249, 249, 0.1);

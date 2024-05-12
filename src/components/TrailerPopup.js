@@ -1,18 +1,24 @@
 import React from 'react'
+import{useHistory  } from 'react-router-dom'
 import styled from 'styled-components'
 
 const TrailerPopup = ({ url, setShowTrailer }) => {
-    console.log(url)
+    const history = useHistory ();
+    const handleClick = () => {
+        history.goBack();
+      };
     return (
         <StyledContainer>
             <StyleBackground onClick={() => setShowTrailer(false)}>
+               
+                <img src='/images/back_arrow_icon.png' alt='' onClick={handleClick}></img>
                 <StyledTrailer>
                     <iframe 
-                        src={`https://www.youtube.com/embed/'${url}`}
+                        src={`${url}`}
                         
                         title="YouTube video player" 
                         frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; language; gyroscope; picture-in-picture" 
                         allowFullScreen
                     >
         
@@ -45,7 +51,16 @@ const StyleBackground = styled.div`
     background: rgba(0, 0, 0, .5);
     height: 100%;
     width: 100%;
+
+    img{
+        position: absolute;
+top: 20px;
+left: 20px;
+width:50px;
+cursor:pointer;
+    }
 `
+
 
 const StyledTrailer = styled.div`
     display: flex;
@@ -55,9 +70,9 @@ const StyledTrailer = styled.div`
     z-index: 200;
 
     iframe {
-        width: 560px;
+        width: 90%;
         max-width: 90%;
-        height: 315px;
+        height: 515px;
     }
 `
 

@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
+import db from "../firebase";
+
 import {
   selectUserName,
   selectUserPhoto,
@@ -57,6 +59,54 @@ const Header = (props) => {
               }
   };
 
+  // ===============Searching======================
+  const [expanded, setExpanded] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const snapshot = await db.firestore().collection("movies").get();
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSearchResults(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleAnchorClick = () => {
+    setExpanded(!expanded);
+    if (!expanded) {
+      setSearchText("");
+    }
+  };
+
+  const handleChange = (event) => {
+    const inputText = event.target.value;
+    setSearchText(inputText);
+
+    const filtered = searchResults.filter(item =>
+      item.title.toLowerCase().includes(inputText.toLowerCase())
+    );
+    setShowSuggestions(true);
+    setSearchResults(filtered);
+  };
+
+  const handleSelectSuggestion = (selectedText) => {
+    setSearchText(selectedText);
+    setShowSuggestions(false);
+  };
+
+  const handleSearch = () => {
+    console.log("Search for:", searchText);
+  };
+
+  //==============================================
   const setUser = (user) => {
     dispatch(
         setUserLogin({
@@ -83,14 +133,10 @@ const Header = (props) => {
               <span>HOME</span>
             </a>
             <a>
-              <img src="/images/search-icon.svg" alt="SEARCH" />
-              <span>SEARCH</span>
-            </a>
-            <a>
               <img src="/images/watchlist-icon.svg" alt="WATCHLIST" />
               <span>WATCHLIST</span>
             </a>
-            <a>
+            <a href="/orignals">
               <img src="/images/original-icon.svg" alt="ORIGINALS" />
               <span>ORIGINALS</span>
             </a>
@@ -103,6 +149,35 @@ const Header = (props) => {
               <span>SERIES</span>
             </a>
           </NavMenu>
+          <Searchs>
+          <div className="relative">
+      <a  onClick={handleAnchorClick} className="flex items-center">
+        <img src="/images/search-icon.svg" alt="SEARCH" className="w-6 h-6" />
+        <span className="ml-2">SEARCH</span>
+      </a>
+      {expanded && (
+        <div className="absolute top-full left-0 w-full">
+          <input
+            type="text"
+            className="border border-gray-300 px-3 py-2 rounded focus:outline-none focus:border-blue-500"
+            value={searchText}
+            onChange={handleChange}
+          />
+          {showSuggestions && (
+            <ul>
+              {searchResults.map((item, index) => (
+                <li key={index} onClick={() => handleSelectSuggestion(item.title)}>
+                  {item.title}
+                </li>
+              ))}
+            </ul>
+          )}
+          <button onClick={handleSearch}>Search</button>
+        </div>
+      )}
+    </div>
+    </Searchs>
+    <div class="mt-3 space-y-1 px-2">
           <SignOut>
             <UserImg src={userPhoto} alt={userName} />
             
@@ -110,6 +185,7 @@ const Header = (props) => {
               <span onClick={handleAuth}>Sign out</span>
             </DropDown>
           </SignOut>
+          </div>
         </>
       )}
     </Nav>
@@ -121,7 +197,7 @@ const Nav = styled.nav`
   top: 0;
   left: 0;
   right: 0;
-  height: 70px;
+  height: 72px;
   background-color: #090b13;
   display: flex;
   justify-content: space-between;
@@ -224,6 +300,70 @@ const Login = styled.a`
     color: #000;
     border-color: transparent;
   }
+`;
+const Searchs = styled.a`
+align-items: center;
+display: flex;
+flex-flow: row nowrap;
+height: 100%;
+justify-content: flex-end;
+margin: 0px;
+padding: 0px;
+position: relative;
+margin-right: auto;
+margin-left: 25px;
+
+a {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+
+  img {
+    height: 20px;
+    min-width: 20px;
+    width: 20px;
+    z-index: auto;
+  }
+
+  span {
+    color: rgb(249, 249, 249);
+    font-size: 13px;
+    letter-spacing: 1.42px;
+    line-height: 1.08;
+    padding: 2px 0px;
+    white-space: nowrap;
+    position: relative;
+
+    &:before {
+      background-color: rgb(249, 249, 249);
+      border-radius: 0px 0px 4px 4px;
+      bottom: -6px;
+      content: "";
+      height: 2px;
+      left: 0px;
+      opacity: 0;
+      position: absolute;
+      right: 0px;
+      transform-origin: left center;
+      transform: scaleX(0);
+      transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
+      visibility: hidden;
+      width: auto;
+    }
+  }
+
+  &:hover {
+    span:before {
+      transform: scaleX(1);
+      visibility: visible;
+      opacity: 1 !important;
+    }
+  }
+}
+
+/* @media (max-width: 768px) {
+  display: none;
+} */
 `;
 
 const UserImg = styled.img`
