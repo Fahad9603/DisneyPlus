@@ -1,16 +1,31 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectOriginal } from "../features/movie/movieSliec";
 
-const Originals = () => {
+const Originals = (props) => {
   const movies = useSelector(selectOriginal);
+  const containerRef = useRef(null);
 
+  useEffect(() => {
+    const container = containerRef.current;
+
+    const handleWheel = (event) => {
+      event.preventDefault();
+      container.scrollLeft += event.deltaY;
+    };
+
+    container.addEventListener('wheel', handleWheel);
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
   return (
     <Container>
-      <h4>Originals Disney Plus</h4>
-     <Content>
+      <h4>Originals</h4>
+      <Content ref={containerRef}>
         {movies &&
           movies.map((movie, key) => (
             <Wrap key={key}>
@@ -25,31 +40,30 @@ const Originals = () => {
   );
 };
 const Container = styled.div`
-position: relative;
-min-height: calc(100vh - 72px);
-overflow-x: hidden;
-display: block;
-top: 72px;
-padding: 0 calc(3.5vw + 5px);
+  padding: 0 0 26px;
 
-&:after {
-  background: url("/images/home-background.png") center center / cover
-    no-repeat fixed;
-  content: "";
-  position: absolute;
-  inset: 0px;
-  opacity: 1;
-  z-index: -1;
-}
 `;
 
 const Content = styled.div`
-display: grid;
-grid-gap: 25px;
-grid-template-columns: repeat(4, minmax(0,1fr));
+ display: grid;
+  grid-gap: 25px;
+  gap: 25px;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(25%, 1fr); 
 
+  @media (max-width: 768px) {
+    grid-auto-columns: minmax(50%, 1fr); 
+  }
+  overflow-x: auto; /* Horizontal scroll */
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  &::-webkit-scrollbar {
+    display: none; /* Hide scrollbar */
+  }
 `;
-
+const Item = styled.div`
+  flex-shrink: 0; /* Prevents the items from shrinking */
+  width: 200px; /* Set width of each item */
+`;
 const Wrap = styled.div`
   padding-top: 56.25%;
   border-radius: 10px;

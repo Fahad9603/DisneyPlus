@@ -1,33 +1,33 @@
-import React, { useRef, useEffect } from 'react';
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectMovies } from "../features/movie/movieSliec";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import db from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
-const Movies = (props) => {
-  const movies = useSelector(selectMovies);
-  const containerRef = useRef(null);
+const Movies = () => {
+    const [Movies, setMovies] = useState([]);
+    useEffect(() => {
+        const fetchMoviesList = async () => {
+          try {
+            const querySnapshot = await getDocs(collection(db, 'Movies'));
+            const fetchedMoviesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setMovies(fetchedMoviesList);
+          
+          } catch (error) {
+            console.error("Error fetching images:", error);
+          }
+        };
+    
+        fetchMoviesList();
+      }, []);
+    
 
-  useEffect(() => {
-    const container = containerRef.current;
-
-    const handleWheel = (event) => {
-      event.preventDefault();
-      container.scrollLeft += event.deltaY;
-    };
-
-    container.addEventListener('wheel', handleWheel);
-
-    return () => {
-      container.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
   return (
     <Container>
-      <h4>New to Disney+</h4>
-      <Content ref={containerRef}>
-        {movies &&
-          movies.map((movie, key) => (
+      <h4>Movies Disney Plus</h4>
+     <Content>
+        {Movies &&
+          Movies.map((movie, key) => (
             <Wrap key={key}>
               {movie.id}
               <Link to={`/detail/` + movie.id}>
@@ -40,30 +40,31 @@ const Movies = (props) => {
   );
 };
 const Container = styled.div`
-  padding: 0 0 26px;
+position: relative;
+min-height: calc(100vh - 72px);
+overflow-x: hidden;
+display: block;
+top: 72px;
+padding: 0 calc(3.5vw + 5px);
 
+&:after {
+  background: url("/images/home-background.png") center center / cover
+    no-repeat fixed;
+  content: "";
+  position: absolute;
+  inset: 0px;
+  opacity: 1;
+  z-index: -1;
+}
 `;
 
 const Content = styled.div`
- display: grid;
-  grid-gap: 25px;
-  gap: 25px;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(25%, 1fr); 
+display: grid;
+grid-gap: 25px;
+grid-template-columns: repeat(4, minmax(0,1fr));
 
-  @media (max-width: 768px) {
-    grid-auto-columns: minmax(50%, 1fr); 
-  }
-  overflow-x: auto; /* Horizontal scroll */
-  overflow-y: hidden; /* Hide vertical scrollbar */
-  &::-webkit-scrollbar {
-    display: none; /* Hide scrollbar */
-  }
 `;
-const Item = styled.div`
-  flex-shrink: 0; /* Prevents the items from shrinking */
-  width: 200px; /* Set width of each item */
-`;
+
 const Wrap = styled.div`
   padding-top: 56.25%;
   border-radius: 10px;

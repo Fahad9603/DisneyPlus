@@ -1,11 +1,11 @@
 import React,{useEffect} from 'react'
 import styled from 'styled-components'
 import ImgSlider from './ImgSlider'
-import Originals from "./Originals";
+import Originals from "./Originals_Slider";
 import Recommends from "./Recommends";
 import Trending from "./Trending";
 import Viewers from './Viewers'
-import NewDisney   from "./Movies";
+import NewDisney   from "./Movies_Slider";
 import db from '../firebase'
 import {useDispatch,useSelector} from 'react-redux'
 import { onSnapshot, collection } from "firebase/firestore";
