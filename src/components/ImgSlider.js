@@ -15,6 +15,11 @@ const ImgSlider = (props) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
+    appendDots: dots => (
+      <DotsContainer>
+        <ul> {dots} </ul>
+      </DotsContainer>
+    ),
   };
   
 const [images, setImages] = useState([]);
@@ -85,6 +90,45 @@ const Carousel = styled(Slider)`
 
   .slick-next {
     right: -75px;
+  }
+`;
+const DotsContainer = styled.div`
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  align-items: right;
+
+  ul {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    margin: 0 5px;
+  }
+
+  button {
+    background: transparent;
+    border: none;
+
+    &:before {
+      font-size: 10px;
+      color: white;
+      opacity: 0.75;
+    }
+
+    &:hover:before {
+      opacity: 1;
+    }
+  }
+
+  .slick-active button:before {
+    opacity: 1;
   }
 `;
 

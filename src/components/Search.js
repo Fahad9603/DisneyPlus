@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { styled as styledMUI } from '@mui/system'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
+import InputBase from '@mui/material/InputBase'
+
 import db from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -37,12 +41,18 @@ const Search = () => {
 
   return (
     <Container>
-        <SearchInput
-          type="text"
-          placeholder="Search by title, character, or genre"
+       <SearchContainer>
+			<SearchIcon />
+			<Input
+				id='searchInput'
           value={searchTerm}
           onChange={handleSearch}
+          placeholder='Search for movies or series...'
+          inputProps={{ 'aria-label': 'Search for movies or series' }}
+          fullWidth
         />
+      </SearchContainer>
+      <h2>Explore</h2>
       {filteredMovies.length > 0 ? (
         <Content>
           {filteredMovies.map((movie, key) => (
@@ -66,7 +76,8 @@ const Container = styled.div`
   min-height: calc(100vh - 72px);
   overflow-x: hidden;
   display: block;
-  top: 72px;
+  top: 60px;
+  margin-bottom: auto;
   padding: 0 calc(3.5vw + 5px);
 
   &:after {
@@ -79,30 +90,6 @@ const Container = styled.div`
   }
 `;
 
-const SearchBar = styled.div`
-  background: #333;
-  padding: 20px 0;
-  display: flex;
-  justify-content: center;
-`;
-
-const SearchInput = styled.input`
- 
-  padding: 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  outline: none;
-  background-color: #fff;
-  color: #333;
-  width: 100%;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  &::placeholder {
-    color: #999;
-  }
-`;
 
 const Content = styled.div`
   display: grid;
@@ -142,6 +129,45 @@ const Wrap = styled.div`
   }
 `;
 
+const SearchContainer = styled.div`
+	display: flex;
+	align-items: center;
+	width: 100%;
+	margin: 20px 0;
+	padding: 5px;
+	background-color: rgb(75, 78, 90);
+	border-radius: 8px;
+
+	@media (min-width: 700px) {
+		width: 100%;
+		margin: 40px 0;
+		padding: 15px;
+	}
+
+	@media (min-width: 1200px) {
+		width: 100%;
+		margin: 60px 0;
+		padding: 20px;
+	}
+`
+
+const SearchIcon = styledMUI(SearchRoundedIcon)({
+	marginRight: '10px',
+	fontSize: '27px',
+})
+
+const Input = styledMUI(InputBase)({
+	color: 'white',
+	fontSize: '16px',
+
+	'@media (min-width: 700px)': {
+		fontSize: '18px',
+	},
+
+	'@media (min-width: 1200px)': {
+		fontSize: '20px',
+	},
+})
 const NoResultsMessage = styled.div`
   padding: 20px;
   text-align: center;

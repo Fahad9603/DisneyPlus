@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
+import { styled as styledMUI } from '@mui/system';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import db from '../firebase.js';
-import { doc, getDoc, collection, addDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, deleteDoc, query, where, getDocs } from "firebase/firestore";
 import TrailerPopup from "./TrailerPopup";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +17,8 @@ const Detail = (props) => {
   const [detailData, setDetailData] = useState({});
   const [showTrailer, setShowTrailer] = useState(false);
   const [showMovie, setShowMovie] = useState(false);
-  const [wishList, setWishList] = useState(false);
+  const history = useHistory();
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -27,6 +33,17 @@ const Detail = (props) => {
       }
     };
     fetchMovie();
+
+    const checkWishlist = async () => {
+      try {
+        const q = query(collection(db, "WishList"), where("movieId", "==", id));
+        const querySnapshot = await getDocs(q);
+        setIsInWishlist(!querySnapshot.empty);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    checkWishlist();
   }, [id]);
 
   const addToWishList = async () => {
@@ -40,14 +57,32 @@ const Detail = (props) => {
         subTitle: detailData.subTitle,
         description: detailData.description,
         cardImg: detailData.cardImg,
-        trailer:detailData.trailer,
+        trailer: detailData.trailer,
         type: detailData.type
       });
-      setWishList(true);
+      setIsInWishlist(true);
       toast.success("Added to wishlist successfully!");
     } catch (error) {
       toast.error("Failed to add to wishlist. Please try again.");
     }
+  };
+
+  const removeFromWishList = async () => {
+    try {
+      const q = query(collection(db, "WishList"), where("movieId", "==", id));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+      setIsInWishlist(false);
+      toast.success("Removed from wishlist successfully!");
+    } catch (error) {
+      toast.error("Failed to remove from wishlist. Please try again.");
+    }
+  };
+
+  const backToPreviousPageHandler = () => {
+    history.goBack();
   };
 
   return (
@@ -66,6 +101,9 @@ const Detail = (props) => {
         />
       }
       <StyledContainer>
+        <StyledIconButton className='back' variant='outlined' onClick={backToPreviousPageHandler}>
+          <ArrowBackIosNewRoundedIcon />
+        </StyledIconButton>
         <StyledBackground style={{ backgroundImage: `url(${detailData.backgroundImg})` }} />
         <StyledImageTitle>
           <img src={detailData.titleImg} alt={detailData.title} />
@@ -80,10 +118,15 @@ const Detail = (props) => {
               <img src="/images/play-icon-white.png" alt="play-icon-white" />
               <span>Trailer</span>
             </StyledTrailer>
-            <StyledAddList onClick={addToWishList}>
-              <span />
-              <span />
-            </StyledAddList>
+            {isInWishlist ? (
+              <StyledIconButton className='remove' variant='outlined' onClick={removeFromWishList}>
+                <DoneRoundedIcon />
+              </StyledIconButton>
+            ) : (
+              <StyledIconButton className='add' variant='outlined' onClick={addToWishList}>
+                <AddRoundedIcon />
+              </StyledIconButton>
+            )}
           </StyledControls>
           <StyledSubTitle>{detailData.subTitle}</StyledSubTitle>
           <StyledDescription>{detailData.description}</StyledDescription>
@@ -91,7 +134,7 @@ const Detail = (props) => {
       </StyledContainer>
     </>
   );
-}
+};
 
 const StyledContainer = styled.div`
   position: relative;
@@ -103,7 +146,20 @@ const StyledContainer = styled.div`
   padding: 0 calc(3.5vw + 5px);
   overflow: hidden;
 `;
+const StyledIconButton = styledMUI(IconButton)({
+  color: '#F9F6EE',
+  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  borderColor: '#F9F6EE',
+  transition: 'background-color 0.3s',
 
+  '&.back': {
+    marginTop: '25px',
+  },
+
+  '&:hover': {
+    backgroundColor: '#000',
+  },
+});
 const StyledBackground = styled.div`
   position: absolute;
   left: 0px;
@@ -197,58 +253,6 @@ const StyledTrailer = styled(StyledPlayer)`
 
   &:hover {
     background: #111;
-  }
-`;
-
-const StyledAddList = styled.div`
-  margin: 0 16px;
-  height: 44px;
-  width: 44px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 50%;
-  border: 2px solid white;
-  cursor: pointer;
-
-  span {
-    background-color: rgb(249, 249, 249);
-    display: inline-block;
-
-    &:first-child {
-      height: 2px;
-      transform: translate(1px, 0px) rotate(0deg);
-      width: 16px;
-    }
-
-    &:nth-child(2) {
-      height: 16px;
-      transform: translateX(-8px) rotate(0deg);
-      width: 2px;
-    }
-  }
-`;
-
-const StyledGroupWatch = styled.div`
-  height: 44px;
-  width: 44px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background: white;
-
-  div {
-    height: 40px;
-    width: 40px;
-    background: rgb(0, 0, 0);
-    border-radius: 50%;
-
-    img {
-      width: 100%;
-    }
   }
 `;
 

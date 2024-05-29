@@ -8,6 +8,14 @@ const Originals = (props) => {
   const movies = useSelector(selectOriginal);
   const containerRef = useRef(null);
 
+  const scrollLeft = () => {
+    containerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+  };
+
+  const scrollRight = () => {
+    containerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const container = containerRef.current;
 
@@ -22,48 +30,77 @@ const Originals = (props) => {
       container.removeEventListener('wheel', handleWheel);
     };
   }, []);
+
   return (
-    <Container>
-      <h4>Originals</h4>
-      <Content ref={containerRef}>
-        {movies &&
-          movies.map((movie, key) => (
-            <Wrap key={key}>
-              {movie.id}
-              <Link to={`/detail/` + movie.id}>
-                <img src={movie.cardImg} alt={movie.title} />
-              </Link>
-            </Wrap>
-          ))}
-      </Content>
-    </Container>
+    <>
+      <Container>
+        <h4>Originals</h4>
+        
+        <Content ref={containerRef}>
+          {movies &&
+            movies.map((movie, key) => (
+              <Wrap key={key}>
+                {movie.id}
+                <Link to={`/detail/` + movie.id}>
+                  <img src={movie.cardImg} alt={movie.title} />
+                </Link>
+              </Wrap>
+            ))}
+        </Content>
+   
+      </Container>
+    </>
   );
 };
-const Container = styled.div`
-  padding: 0 0 26px;
 
+const Container = styled.div`
+  position: relative;
+  padding: 0 0 26px;
 `;
 
 const Content = styled.div`
- display: grid;
+  display: grid;
   grid-gap: 25px;
   gap: 25px;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(25%, 1fr); 
+  grid-auto-columns: minmax(25%, 1fr);
 
   @media (max-width: 768px) {
-    grid-auto-columns: minmax(50%, 1fr); 
+    grid-auto-columns: minmax(50%, 1fr);
   }
-  overflow-x: auto; /* Horizontal scroll */
-  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: auto;
+  overflow-y: hidden;
   &::-webkit-scrollbar {
-    display: none; /* Hide scrollbar */
+    display: none;
   }
 `;
-const Item = styled.div`
-  flex-shrink: 0; /* Prevents the items from shrinking */
-  width: 200px; /* Set width of each item */
+
+const Button = styled.button`
+  position: absolute;
+  top: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+   border-radius: 50%;
+   justify-content: center;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 2;
+  &:hover {
+    opacity: 1;
+    transition: opacity 0.2s ease 0s;
+  }
 `;
+
+const ButtonLeft = styled(Button)`
+  left: 0;
+`;
+
+const ButtonRight = styled(Button)`
+  right: 0;
+`;
+
 const Wrap = styled.div`
   padding-top: 56.25%;
   border-radius: 10px;

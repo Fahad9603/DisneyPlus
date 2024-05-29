@@ -6,15 +6,16 @@ import Home from './components/Home'
 import Search from './components/Search'
 import Wishlist from './components/WishList';
 import Series from './components/Series';
+import SeriesEpisode from './components/SeriesEpisode';
 import Movies from './components/Movies';
 import Originals from './components/Originals';
-import Detail from './components/Detail'
-import Login from './components/Login'
+import Detail from './components/Detail';
+import Login from './components/Login';
+import Footer from './components/Footer';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 
@@ -46,6 +47,9 @@ function App() {
           <Route path="/series">
             <Series />
           </Route>
+          <Route path="/seriesepisode/:id">
+            <SeriesEpisode />
+          </Route>
           <Route path="/movies">
             <Movies />
           </Route>
@@ -53,8 +57,11 @@ function App() {
             <Search />
           </Route>
         </Switch>
+       
+      {/* <Footer /> */}
       </Router>
     </div>
+    
   );
 }
 

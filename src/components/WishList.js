@@ -48,7 +48,8 @@ const Container = styled.div`
   min-height: calc(100vh - 72px);
   overflow-x: hidden;
   display: block;
-  top: 72px;
+  top: 60px;
+  margin-bottom: auto;
   padding: 0 calc(3.5vw + 5px);
 
   &:after {
