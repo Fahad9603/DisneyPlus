@@ -1,9 +1,9 @@
 import React from 'react'
-import{useHistory  } from 'react-router-dom'
+import{useNavigate  } from 'react-router-dom'
 import styled from 'styled-components'
 
 const TrailerPopup = ({ url, setShowTrailer }) => {
-    const history = useHistory ();
+    const history = useNavigate  ();
     const handleClick = () => {
         history.goBack();
       };

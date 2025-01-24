@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Login({ onLogin }) {
-  const history = useHistory();
+  const history = useNavigate();
 
   const handleLogin = () => {
     onLogin();
-    history.push('/home');
+    history('/home');
   };
 
   return (
