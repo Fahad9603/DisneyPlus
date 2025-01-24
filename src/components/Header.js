@@ -1,75 +1,36 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation, Link } from "react-router-dom"; 
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 import {
   selectUserName,
   selectUserPhoto,
   setUserLogin,
   setSignOut,
-} from "../features/user/UserSliec"; 
+} from "../features/user/UserSliec";
 
-const Header = (props) => {
+const Header = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const history = useNavigate();
   const location = useLocation();
   const userName = useSelector(selectUserName);
   const userPhoto = useSelector(selectUserPhoto);
   const auth = getAuth();
-  const provider = new GoogleAuthProvider();
-
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setUser(user);
-        const redirectPath = location.state?.from || "/home";
-        history.push(redirectPath);
-      }
-    });
-  }, [userName, auth, history, location.state?.from]);
 
   const handleAuth = () => {
     if (!userName) {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          let user = result.user;
-          console.log(user);
-          dispatch(
-            setUserLogin({
-              name: user.displayName,
-              email: user.email,
-              photo: user.photoURL,
-            })
-          );
-        })
-        .catch((error) => {
-          if (error.code === 'auth/popup-closed-by-user') {
-            console.log('Popup closed by user');
-          } else {
-            console.error('Error occurred during authentication:', error);
-          }
-        });
+      // Redirect to the SignIn page without triggering Google Auth here
+      history("/SignIn");
     } else if (userName) {
       auth
         .signOut()
         .then(() => {
           dispatch(setSignOut());
-          history.push("/login");
+          history("/login");
         })
         .catch((err) => alert(err.message));
     }
-  };
-
-  const setUser = (user) => {
-    dispatch(
-      setUserLogin({
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-      })
-    );
   };
 
   return (
@@ -166,7 +127,7 @@ const NavMenu = styled.div`
     display: flex;
     align-items: center;
     padding: 0 12px;
-    text-decoration: none; // Add this to remove underline
+    text-decoration: none; 
 
     img {
       height: 20px;
@@ -220,7 +181,7 @@ const Login = styled.a`
   border: 1px solid #f9f9f9;
   border-radius: 4px;
   transition: all 0.2s ease 0s;
-  cursor: pointer; // Add this to make it clear that it is clickable
+  cursor: pointer;
 
   &:hover {
     background-color: #f9f9f9;
