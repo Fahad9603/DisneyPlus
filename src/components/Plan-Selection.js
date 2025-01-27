@@ -12,6 +12,7 @@ function PlanScreen() {
   const email = useSelector(selectUserEmail);
   const [loading, setLoading] = useState(false);
   const UID = useSelector(selectUserUID);
+  console.log("email" + email +"UID" + UID)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -131,14 +132,21 @@ function PlanScreen() {
   );
 }
 
-export const Container = styled.div`
+const Container = styled.div`
+  position: inherit;
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 20px;
   background: url("/images/login-background.jpg") no-repeat center center/cover;
-`;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.7;
+  z-index: -1;
+`;  
 
 export const Card = styled.div`
   border-radius: 12px;

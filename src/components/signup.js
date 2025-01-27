@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { setUserLogin } from '../features/user/UserSliec';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,14 +14,20 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();  
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(true); // Initially show the header
-
+  const dispatch = useDispatch();
+  const [isVisible, setIsVisible] = useState(true); 
   const handleSignup = (email, password) => {
     const auth = getAuth();
-    setLoading(true); // Set loading to true when signup starts
+    setLoading(true); 
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        dispatch(setUserLogin({
+          name: user.displayName || 'Default Name',  
+          email: user.email,
+          photo: user.photoURL || '',  
+          uid: user.uid
+        }));
         toast.info("User signed up:", user);
         navigate("/Plan-Selection");
       })
@@ -34,27 +42,26 @@ const LoginPage = () => {
         }
       })
       .finally(() => {
-        setLoading(false);  // Reset loading after signup attempt
+        setLoading(false);  
       });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSignup(email, password); // Call the signup function
+    handleSignup(email, password); 
   };
 
-  // Hide Header when on signup page
   useEffect(() => {
     if (location.pathname === '/signup' || loading) {
-      setIsVisible(false); // Hide Header when on signup page or during signup process
+      setIsVisible(false); 
     } else {
-      setIsVisible(true); // Show Header in other cases
+      setIsVisible(true); 
     }
-  }, [location.pathname, loading]);  // Update based on location and loading
+  }, [location.pathname, loading]);  
 
   return (
     <>
-      {isVisible && <Header />}  {/* Conditionally render Header */}
+      {isVisible && <Header />}  
 
       <Container>
         <Main>

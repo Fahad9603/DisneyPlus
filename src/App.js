@@ -47,12 +47,13 @@ function App() {
   
 function HeaderWrapper() {
   const location = useLocation();
-  const noHeaderRoutes = ['/plan-selection', '/SignIn'];
+  const noHeaderRoutes = ['/plan-selection', '/SignIn', '/signup']; 
 
-  if (noHeaderRoutes.includes(location.pathname)) {
-    return null;
+  console.log("Current Path:", location.pathname); 
+
+  if (noHeaderRoutes.includes(location.pathname.toLowerCase())) {
+    return null; 
   }
-
   return <Header />;
 }
 
