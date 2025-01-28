@@ -16,6 +16,7 @@ import SignUp from './components/signup';
 import SignIn from './components/SignIn';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
+import PasswordReset from './components/PasswordReset';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path='/plan-selection' element={<SubscribePage />} />
             <Route path="/SignIn" element={<SignIn />} />
             <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/PasswordReset" element={<PasswordReset />} />
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/detail/:id" element={<ProtectedRoute><Detail /></ProtectedRoute>} />
@@ -47,7 +49,7 @@ function App() {
   
 function HeaderWrapper() {
   const location = useLocation();
-  const noHeaderRoutes = ['/plan-selection', '/SignIn', '/signup']; 
+  const noHeaderRoutes = ['/plan-selection', '/SignIn', '/signup', '/passwordreset']; 
 
   console.log("Current Path:", location.pathname); 
 

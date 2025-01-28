@@ -40,9 +40,9 @@ const SignIn = () => {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
 
-      const userDocRef = doc(db, 'users', user.uid);
+      const user = userCredential.user;
+      const userDocRef = doc(db, 'customers', user.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
@@ -63,11 +63,12 @@ const SignIn = () => {
         toast.error('User data not found. Please contact support.');
       }
     } catch (err) {
-      if (err.code === 'auth/user-not-found') {
+      if (err.code === 'auth/user-not-found' || 'auth/invalid-credential') {
         toast.error('User not found. Please check your email.');
       } else if (err.code === 'auth/wrong-password') {
         toast.error('Incorrect password. Please try again.');
       } else {
+        console.log(err)
         toast.error('Something went wrong. Please try again later.');
       }
     }
@@ -102,13 +103,15 @@ const SignIn = () => {
               required
             />
           </FormGroup>
+          <SignupLink to="/PasswordReset" onClick={handleSignupClick}>ForgotPassword</SignupLink>
+
           <SubmitButton type="submit" disabled={loading}>
             {loading ? 'Signing In...' : 'Sign In'}
           </SubmitButton>
         </Form>
         <SignupLink to="/signup" onClick={handleSignupClick}>New User? Sign Up Here</SignupLink>
 
-        {/* Conditionally render the Header component */}
+
         {isVisible && <Header />}
       </Main>
     </Container>

@@ -98,27 +98,35 @@ function PlanScreen() {
 
   return (
     <Container>
+        <Header>
+    <Title>Choose Your Plan</Title>
+    <EmailHeading>Email: {email}</EmailHeading>
+  </Header>
+  <PlansWrapper>
       {Object.entries(products).map(([productId, productData]) => (
         <Card key={productId}>
-          <Title>Disney+ Subscription</Title>
           <Form onSubmit={(e) => e.preventDefault()}>
-            <EmailHeading>{email}</EmailHeading>
+           
 
-            <ProductsContainer>
+        
               <ProductCard
                 key={productId}
                 onClick={() => setSelectedProductId(productId)}
                 isSelected={selectedProductId === productId}
-              >
-                <h3>{productData.name}</h3>
-                <p>{productData.description}</p>
+              >  <PlanHeader>
+          <PlanLogo src="/images/logo.svg" alt="Disney+" />
+          <PlanTitle>{productData.name}</PlanTitle>
+          <PlanDescription>{productData.description}</PlanDescription>
+                </PlanHeader>
+                <PlanFeatures>
                 {productData.prices?.map((price) => (
-                  <p key={price.priceId}>
-                    Price: ${price.priceData.unit_amount / 100}
-                  </p>
+                  <Feature key={price.priceId}>
+                    Price: ${price.priceData.unit_amount / 100} /Month
+                  </Feature>
                 ))}
+                </PlanFeatures>
               </ProductCard>
-            </ProductsContainer>
+     
 
             {productData.prices?.map((price) => (
               <Button key={price.priceId} onClick={() => loadCheckout(price.priceId)} disabled={selectedProductId !== productId}>
@@ -128,6 +136,7 @@ function PlanScreen() {
           </Form>
         </Card>
       ))}
+        </PlansWrapper>
     </Container>
   );
 }
@@ -136,6 +145,7 @@ const Container = styled.div`
   position: inherit;
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   background: url("/images/login-background.jpg") no-repeat center center/cover;
   content: "";
@@ -148,6 +158,64 @@ const Container = styled.div`
   z-index: -1;
 `;  
 
+
+const PlanLogo = styled.img`
+height: 40px;
+margin-bottom: 10px;
+`;
+const Header = styled.div`
+  text-align: center;
+  margin-bottom: 30px;
+`;
+
+const Title = styled.h1`
+  font-size: 32px;
+  color: white;
+`;
+
+const EmailHeading = styled.h3`
+  font-size: 18px;
+  color: #ddd;
+  margin-top: 10px;
+`;
+
+const PlanHeader = styled.div`
+  margin-bottom: 20px;
+`;
+
+const PlanTitle = styled.h3`
+  font-size: 20px;
+  color: white;
+  margin-bottom: 5px;
+`;
+
+const PlanDescription = styled.p`
+  font-size: 14px;
+  color: #999;
+`;
+
+const PlanFeatures = styled.div`
+
+  margin-bottom: 20px;
+`;
+
+const Feature = styled.p`
+  font-size: 14px;
+  margin: 5px 0;
+`;
+const PlansWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+    box-shadow: -9px 9px 9px rgba(0, 0, 0, 264);
+      border-radius: 21px;
+  
+  @media (max-width: 768px) {
+    max-width: 90%;
+    height: auto;
+  }
+`;
 export const Card = styled.div`
   border-radius: 12px;
   padding: 20px;
@@ -157,16 +225,6 @@ export const Card = styled.div`
 `;
 
 
-export const Title = styled.h1`
-  color: #fff;
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-export const EmailHeading = styled.h2`
-  color: #ccc;
-  margin-bottom: 15px;
-`;
 
 export const Form = styled.form`
   display: flex;
@@ -174,7 +232,7 @@ export const Form = styled.form`
 `;
 
 export const Button = styled.button`
-  background-color: #e50914;
+  background-color: #0063e5;
   color: #fff;
   padding: 10px;
   border: none;
@@ -184,7 +242,7 @@ export const Button = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #f40612;
+    background-color: #0063e5;
   }
 
   &:disabled {
@@ -198,15 +256,18 @@ export const ProductsContainer = styled.div`
 `;
 
 export const ProductCard = styled.div`
-  background: ${({ isSelected }) => (isSelected ? "#444" : "#333")};
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
+ background: ${({ isSelected }) => (isSelected ? "#444" : "#00000057")};
+  border: 2px solid ${({ isSelected }) => (isSelected ? "#0063e5" : "#333")};
+  border-radius: 12px;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  position: relative;
   cursor: pointer;
-  box-shadow: ${({ isSelected }) => (isSelected ? "0 0 10px #e50914" : "none")};
+  transition: all 0.3s ease;
 
-  h3, p {
-    color: #fff;
+  &:hover {
+    border-color:#0063e5;
   }
 `;
 

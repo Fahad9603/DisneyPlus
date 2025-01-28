@@ -7,7 +7,7 @@ import { getAuth, signOut } from 'firebase/auth';
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();  // Track the current route
+  const location = useLocation();
   const { user } = useAuth();
   const auth = getAuth();
   const [isVisible, setIsVisible] = useState(true);
@@ -20,6 +20,19 @@ const Header = () => {
       setIsVisible(true);
     }
   }, [location.pathname]);
+
+  // Close the menu if the user clicks outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('nav') && !event.target.closest('.sidebar')) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   const handleAuth = () => {
     if (!user) {
@@ -35,7 +48,7 @@ const Header = () => {
     }
   };
 
-  if (!isVisible) return null;  // Don't render the Nav if it's not visible
+  if (!isVisible) return null;
 
   return (
     <Nav>
@@ -45,33 +58,34 @@ const Header = () => {
       <MenuToggle onClick={() => setMenuOpen(!menuOpen)}>
         ☰
       </MenuToggle>
-      <Menu open={menuOpen}>
+      <Sidebar open={menuOpen}>
+        <CloseButton onClick={() => setMenuOpen(false)}>×</CloseButton>
         {!user ? (
           <Login onClick={handleAuth}>Login</Login>
         ) : (
           <>
             <NavMenu>
-              <Link to="/home">
+              <Link to="/home" onClick={() => setMenuOpen(false)}>
                 <img src="/images/home-icon.svg" alt="HOME" />
                 <span>HOME</span>
               </Link>
-              <Link to="/search">
+              <Link to="/search" onClick={() => setMenuOpen(false)}>
                 <img src="/images/search-icon.svg" alt="SEARCH" />
                 <span>SEARCH</span>
               </Link>
-              <Link to="/wishlist">
+              <Link to="/wishlist" onClick={() => setMenuOpen(false)}>
                 <img src="/images/watchlist-icon.svg" alt="WATCHLIST" />
                 <span>WATCHLIST</span>
               </Link>
-              <Link to="/originals">
+              <Link to="/originals" onClick={() => setMenuOpen(false)}>
                 <img src="/images/original-icon.svg" alt="ORIGINALS" />
                 <span>ORIGINALS</span>
               </Link>
-              <Link to="/movies">
+              <Link to="/movies" onClick={() => setMenuOpen(false)}>
                 <img src="/images/movie-icon.svg" alt="MOVIES" />
                 <span>MOVIES</span>
               </Link>
-              <Link to="/series">
+              <Link to="/series" onClick={() => setMenuOpen(false)}>
                 <img src="/images/series-icon.svg" alt="SERIES" />
                 <span>SERIES</span>
               </Link>
@@ -84,7 +98,7 @@ const Header = () => {
             </SignOut>
           </>
         )}
-      </Menu>
+      </Sidebar>
     </Nav>
   );
 };
@@ -102,10 +116,10 @@ const Nav = styled.nav`
   z-index: 3;
   width: 100%;
   box-sizing: border-box;
+  transition: padding 0.3s ease;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 10px;
+    flex-direction: row;
   }
 `;
 
@@ -118,28 +132,35 @@ const Logo = styled.a`
 `;
 
 const MenuToggle = styled.div`
-  display: none;
+  display: block;
   cursor: pointer;
   font-size: 24px;
   color: white;
 
-  @media (max-width: 768px) {
-    display: block;
+  @media (min-width: 769px) {
+    display: none;
   }
 `;
 
-const Menu = styled.div`
-  display: ${(props) => (props.open ? "flex" : "none")};
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
+const Sidebar = styled.div`
+  position: fixed;
+  top: 0;
+  left: ${(props) => (props.open ? '0' : '-250px')};
+  width: 250px;
+  height: 100%;
+  background-color: #090b13;
+  transition: left 0.3s ease;
+  padding: 20px;
+  z-index: 2;
+`;
 
-  @media (min-width: 768px) {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: auto;
-  }
+const CloseButton = styled.div`
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 20px;
 `;
 
 const NavMenu = styled.div`
@@ -163,11 +184,6 @@ const NavMenu = styled.div`
       color: white;
       font-size: 14px;
     }
-  }
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    width: auto;
   }
 `;
 
