@@ -149,10 +149,25 @@ const Sidebar = styled.div`
   width: 250px;
   height: 100%;
   background-color: #090b13;
-  transition: left 0.3s ease;
+  transition: left 0.3s ease-in-out;
   padding: 20px;
-  z-index: 2;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (min-width: 769px) {
+    left: 0;
+    width: auto;
+    height: auto;
+    background: none;
+    position: static;
+    padding: 0;
+    flex-direction: row;
+    align-items: center;
+  }
 `;
+
 
 const CloseButton = styled.div`
   font-size: 30px;
@@ -166,27 +181,61 @@ const CloseButton = styled.div`
 const NavMenu = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: ;  
+  width: 100%;
 
   a {
     display: flex;
     align-items: center;
-    margin: 10px 0;
+    justify-content: center;
+    width: 100%;
+    padding: 13px 0;
     text-decoration: none;
-    padding: 10px 0;
     color: white;
+    transition: background 0.3s ease;
+
+    &:hover {
+      span:after {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+    }
 
     img {
-      height: 20px;
-      margin-right: 5px;
+      height: 24px;
+      margin-right: 10px;
     }
 
     span {
-      color: white;
-      font-size: 14px;
+       font-size: 13px;
+            letter-spacing: 1.42px;
+            position: relative;
+
+            &:after {
+                content: "";
+                height: 2px;
+                background: white;
+                position: absolute;
+                left: 0; 
+                right: 0;
+                bottom: -6px;
+                opacity: 0;
+                transform-origin: left center;
+                transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
+                transform: scaleX(0);
+            }
     }
   }
-`;
 
+  @media (min-width: 769px) {
+    flex-direction: row;
+    width: auto;
+
+    a {
+      padding: 15px 12px;
+    }
+  }
+`; 
 const Login = styled.a`
   background-color: rgba(0, 0, 0, 0.6);
   padding: 8px 16px;
@@ -205,17 +254,26 @@ const UserImg = styled.img`
   height: 40px;
   width: 40px;
   border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
 `;
 
 const SignOut = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  margin-top: 20px;
+
+  @media (min-width: 769px) {
+    margin-top: 0;
+    margin-left: 20px;
+  }
 `;
 
 const DropDown = styled.div`
   position: absolute;
   top: 50px;
+  right: 0;
   background: #090b13;
   padding: 10px;
   border-radius: 4px;

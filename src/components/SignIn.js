@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUserLogin } from '../features/user/UserSliec'; // Corrected Slice Name
+import { setUserLogin } from '../features/user/UserSliec'; 
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
+import {useLoader} from '../features/Loader/hooks/useLoader'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { ToastContainer, toast } from 'react-toastify';
@@ -13,7 +14,8 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isVisible, setIsVisible] = useState(true); // State to control Header visibility
+  const [isVisible, setIsVisible] = useState(true); 
+  const { showLoader, hideLoader } = useLoader();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const SignIn = () => {
     e.preventDefault();
     if (!validateInput()) return;
 
-    setLoading(true);
+    showLoader()
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
@@ -72,11 +74,11 @@ const SignIn = () => {
         toast.error('Something went wrong. Please try again later.');
       }
     }
-    setLoading(false);
+    hideLoader()
   };
 
   const handleSignupClick = () => {
-    setIsVisible(false); // Set isVisible to false to hide the Header
+    setIsVisible(false); 
   };
 
   return (

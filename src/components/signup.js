@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { setUserLogin } from '../features/user/UserSliec';
+import {useLoader} from '../features/Loader/hooks/useLoader'
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -16,9 +17,10 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(true); 
+  const { showLoader, hideLoader } = useLoader();
   const handleSignup = (email, password) => {
     const auth = getAuth();
-    setLoading(true); 
+    showLoader()
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -42,7 +44,7 @@ const LoginPage = () => {
         }
       })
       .finally(() => {
-        setLoading(false);  
+        hideLoader() 
       });
   };
 

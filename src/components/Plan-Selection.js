@@ -5,6 +5,7 @@ import { selectUserEmail,selectUserUID } from "../features/user/UserSliec";
 import { collection, doc, addDoc, onSnapshot, query, where, getDocs } from "firebase/firestore";
 import { loadStripe } from "@stripe/stripe-js";
 import { useSelector } from "react-redux";
+import {useLoader} from '../features/Loader/hooks/useLoader';
 
 function PlanScreen() {
   const [products, setProducts] = useState({});
@@ -12,6 +13,7 @@ function PlanScreen() {
   const email = useSelector(selectUserEmail);
   const [loading, setLoading] = useState(false);
   const UID = useSelector(selectUserUID);
+   const { showLoader, hideLoader } = useLoader();
   console.log("email" + email +"UID" + UID)
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,7 +54,7 @@ function PlanScreen() {
       return
     }
 
-    setLoading(true)
+    showLoader()
 
     try {
       const userDocRef = doc(db, "customers", UID)
@@ -70,7 +72,7 @@ function PlanScreen() {
         if (error) {
           console.error("Stripe error:", error.message)
           alert(`An error occurred: ${error.message}`)
-          setLoading(false)
+           hideLoader() 
         }
 
         if (sessionId) {
@@ -85,13 +87,13 @@ function PlanScreen() {
             console.error("Stripe failed to load")
             alert("An error occurred while loading the payment system.")
           }
-          setLoading(false)
+           hideLoader() 
         }
       })
     } catch (error) {
       console.error("Error in loadCheckout:", error)
       alert("An error occurred while setting up the checkout.")
-      setLoading(false)
+       hideLoader() 
     }
   }
   
