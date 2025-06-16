@@ -30,7 +30,7 @@ const [images, setImages] = useState([]);
         const querySnapshot = await getDocs(collection(db, 'Slider_Image'));
         const fetchedImages = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setImages(fetchedImages);
-        console.log(setImages,fetchedImages)
+   
       } catch (error) {
         console.error("Error fetching images:", error);
       }

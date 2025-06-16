@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { styled as styledMUI } from '@mui/system';
 import IconButton from '@mui/material/IconButton';
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ const SeriesEpisode = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [selectedEpisode, setSelectedEpisode] = useState(null);
-  const history = useHistory();
+  const history = useNavigate();
 
   useEffect(() => {
     const fetchMovie = async () => {

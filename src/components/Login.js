@@ -1,20 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Login({ onLogin }) {
-  const history = useHistory();
+  const history = useNavigate();
 
   const handleLogin = () => {
     onLogin();
-    history.push('/home');
+    history('/home');
   };
 
   return (
     <Container>
       <CTA>
         <CTALogoOne src="/images/cta-logo-one.svg" />
-        <SignUp onClick={handleLogin}>GET ALL THERE</SignUp>
+        <SignUp>GET ALL THERE</SignUp>
         <Description>
           Get Premier Access to Raya and the Last Dragon for an additional fee
           with a Disney+ subscription. As of 03/26/21, the price of Disney+

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { styled as styledMUI } from '@mui/system';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
@@ -17,7 +17,7 @@ const Detail = (props) => {
   const [detailData, setDetailData] = useState({});
   const [showTrailer, setShowTrailer] = useState(false);
   const [showMovie, setShowMovie] = useState(false);
-  const history = useHistory();
+  const history = useNavigate();
   const [isInWishlist, setIsInWishlist] = useState(false);
 
   useEffect(() => {
